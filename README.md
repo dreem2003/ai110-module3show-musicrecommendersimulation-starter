@@ -10,9 +10,9 @@ Your goal is to:
 - Design a scoring rule that turns that data into recommendations
 - Evaluate what your system gets right and wrong
 - Reflect on how this mirrors real world AI recommenders
+Music recommendation can be a complex endeavor, especially at scale and for enterprise organizations. Multiple factors influence what a user might enjoy, including what similar users prefer (collaborative filtering) and the characteristics of songs a user has already indicated they like (content-based filtering).
 
-@:Music recommendation can be a complex endeavor, especially at scale and for enterprise organizations. Multiple factors influence what a user might enjoy, including what similar users prefer (collaborative filtering) and the characteristics of songs a user has already indicated they like (content-based filtering).
-@: For this demo project, which has a single execution point, we will focus on the latter. This approach analyzes songs and applies a scoring and ranking algorithm based primarily on attributes such as genre, mood, energy, and acousticness.
+For this demo project, which has a single execution point, we will focus on the latter. This approach analyzes songs and applies a scoring and ranking algorithm based primarily on attributes such as genre, mood, energy, and acousticness.
 ---
 
 ## How The System Works
