@@ -9,16 +9,24 @@ You will implement the functions in recommender.py:
 - recommend_songs
 """
 
-from recommender import load_songs, recommend_songs
+from recommender import load_songs, recommend_songs, UserProfile
 
 
 def main() -> None:
     songs = load_songs("data/songs.csv") 
-
-    # Starter example profile
-    user_prefs = {"genre": "pop", "mood": "happy", "energy": 0.8}
-
-    recommendations = recommend_songs(user_prefs, songs, k=5)
+    # "derek_taste" is a valid categorization for testing the music recommender system.
+    # - favorite_genre="pop" exists in songs.csv (e.g., "Sunrise City", "bad guy", "Gym Hero")
+    # - favorite_mood="happy" also appears in the dataset
+    # - target_energy=0.8 is within the 0-1 range covered by song energy values
+    # - likes_acoustic=True tests the boolean logic for acoustic preferences; several pop songs have varied acousticness
+    # This profile covers core attributes and ensures the recommend_songs function can evaluate different aspects
+    derek_taste = UserProfile(
+        favorite_genre="hip hop",
+        favorite_mood="happy",
+        target_energy=0.8,
+        likes_acoustic=True,
+    )
+    recommendations = recommend_songs(derek_taste, songs, k=5)
 
     print("\nTop recommendations:\n")
     for rec in recommendations:

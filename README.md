@@ -11,23 +11,31 @@ Your goal is to:
 - Evaluate what your system gets right and wrong
 - Reflect on how this mirrors real world AI recommenders
 
-Replace this paragraph with your own summary of what your version does.
+Music recommendation can be a complex endeavor, especially at scale and for enterprise organizations. Multiple factors influence what a user might enjoy, including what similar users prefer (collaborative filtering) and the characteristics of songs a user has already indicated they like (content-based filtering).
 
+For this demo project, which has a single execution point, we will focus on the latter. This approach analyzes songs and applies a scoring and ranking algorithm based primarily on attributes such as genre, mood, energy, and acousticness.
 ---
 
 ## How The System Works
 
-Explain your design in plain language.
+Each song is scored against the user's taste profile using four weighted signals that sum to a maximum of **1.0**:
 
-Some prompts to answer:
+| Signal | Weight | How it's measured |
+|---|---|---|
+| **Genre match** | 0.40 | +0.40 if the song's genre exactly matches the user's preferred genre |
+| **Mood match** | 0.30 | +0.30 if the song's mood exactly matches the user's preferred mood |
+| **Energy proximity** | 0.20 | `0.20 × (1 − |song_energy − target_energy|)` — full points for a perfect match, less as the gap widens |
+| **Acousticness preference** | 0.10 | +0.10 if the user likes acoustic and `acousticness > 0.6`, or dislikes acoustic and `acousticness < 0.4` |
 
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
+**`UserProfile`** stores four fields that map directly to those signals: `favorite_genre`, `favorite_mood`, `target_energy` (0–1 float), and `likes_acoustic` (boolean).
 
-You can include a simple diagram or bullet list if helpful.
+**Ranking** uses greedy selection over the scored list. Ties are broken by artist diversity — if two songs share the same score, the one from an artist not already in the results is preferred, preventing any single artist from dominating the top-k.
+
+**Potential biases to be aware of:**
+- **Genre dominance** — at 0.40, genre alone is nearly half the score. A song that perfectly matches the user's mood, energy, and acousticness but differs in genre (e.g., a Jazz track for a Pop fan) can never outscore a weak genre match, even if it would genuinely resonate.
+- **Mood over nuance** — mood is binary (exact match or nothing). Two songs with very similar emotional tones but different mood labels score identically to songs that are complete mismatches.
+- **Energy bias toward the midrange** — the proximity formula rewards songs near 0.5 energy more easily than extreme values (0.0 or 1.0), since there are more neighbors in the middle of the scale.
+- **Acousticness cliff** — the 0.4 / 0.6 thresholds create hard cutoffs; a song at 0.61 acousticness earns full points while one at 0.59 earns none, even though the difference is negligible.
 
 ---
 
@@ -63,6 +71,7 @@ pytest
 ```
 
 You can add more tests in `tests/test_recommender.py`.
+![Result screenshot](image.png)
 
 ---
 
